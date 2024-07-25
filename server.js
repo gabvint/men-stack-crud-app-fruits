@@ -4,6 +4,9 @@ const dotenv = require('dotenv'); // requiring package
 dotenv.config(); // loads the environments variables from .env file
 const express = require('express');
 const mongoose = require('mongoose'); 
+const methodOverride = require('method-override');
+const morgan = require('morgan');
+const path = require('path');
 
 const app = express();
 
@@ -20,6 +23,9 @@ const Fruit = require('./models/fruit.js');
 
 // middleware 
 app.use(express.urlencoded({ extended: false}));
+app.use(methodOverride("_method"));
+app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, "public")));
 
 // GET '/'
 app.get('/', (req, res) => {
@@ -30,7 +36,7 @@ app.get('/', (req, res) => {
 app.get('/fruits', async (req, res) => {
     const allFruits = await Fruit.find()
     console.log(allFruits)
-    
+
     res.render('fruits/index.ejs', { 
         fruits: allFruits 
     });
@@ -48,7 +54,7 @@ app.post('/fruits', async (req, res) => {
     } else {
         req.body.isReadyToEat = false
     }
-    res.redirect('/fruits/new')
+    res.redirect('/fruits')
 
     await Fruit.create(req.body)
 });

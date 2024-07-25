@@ -4,13 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fruits Index</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
 </head>
 <body>
-    <h1>All Fruit</h1>
+    <div class="index-header-div">
+        <h1>All Fruit</h1>
+        <a class="add-fruit" href="/fruits/new">Add Fruit</a>
+    </div>
     <ul>
        <% fruits.forEach(fruit => { %>
-           <li> <%= fruit.name %></li>
+           <li> 
+            <a class="fruit-cards" href="/fruits/<%=fruit._id%>">
+                <%= fruit.name %>
+              </a>
+            </li>
        <% }) %>
     </ul>
+
+
+    <a class="fruits-index-link" href="/">
+        <div class="index-link-text">Back to Home</div>
+      </a>
 </body>
 </html>
