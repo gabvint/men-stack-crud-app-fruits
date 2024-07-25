@@ -18,8 +18,14 @@ mongoose.connection.on('connected', () => {
 // import the fruit model
 const Fruit = require('./models/fruit.js');
 
-app.get('/', async (req, res) => {
+// GET '/'
+app.get('/', (req, res) => {
     res.render('index.ejs')
+});
+
+// GET '/fruits/new'
+app.get('/fruits/new', (req, res) => {
+    res.render('fruits/new.ejs')
 });
 
 app.listen(3000, () => {
