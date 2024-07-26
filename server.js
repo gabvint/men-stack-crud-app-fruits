@@ -83,14 +83,13 @@ app.get('/fruits/:fruitId/edit', async (req, res) => {
 
 });
 
-// PUT '/fruits/:fruitId' - for the edit
+// PUT '/fruits/:fruitId' - update route
 app.put('/fruits/:fruitId', async (req, res) => {
     if (req.body.isReadyToEat === 'on'){
         req.body.isReadyToEat = true;
     } else{
         req.body.isReadyToEat = false;
     }
-
     
     await Fruit.findByIdAndUpdate(req.params.fruitId, req.body)
     res.redirect(`/fruits/${req.params.fruitId}`)
