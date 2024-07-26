@@ -21,6 +21,9 @@ mongoose.connection.on('connected', () => {
 // import the fruit model
 const Fruit = require('./models/fruit.js');
 
+// import controller function
+const fruitsController = require('./controllers/fruits.js')
+
 // middleware 
 app.use(express.urlencoded({ extended: false}));
 app.use(methodOverride("_method"));
@@ -33,27 +36,13 @@ app.get('/', (req, res) => {
 });
 
 // GET '/fruits' - displays all fruits
-app.get('/fruits', async (req, res) => {
-    const allFruits = await Fruit.find()
-    console.log(allFruits)
-
-    res.render('fruits/index.ejs', { 
-        fruits: allFruits 
-    });
-});
+app.get('/fruits', fruitsController.index);
 
 // GET '/fruits/new' - create new fruit
-app.get('/fruits/new', (req, res) => {
-    res.render('fruits/new.ejs')
-});
+app.get('/fruits/new', fruitsController.new);
 
 // GET ''/fruits/:fruitId' - renders show page for fruit id
-app.get('/fruits/:fruitId', async (req, res) => {
-    const foundFruit = await Fruit.findById(req.params.fruitId);
-    res.render('fruits/show.ejs', {
-        fruit: foundFruit,
-    });
-});
+app.get('/fruits/:fruitId', fruitsController.show);
 
 
 // POST '/fruits' - getting new fruit data
