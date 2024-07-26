@@ -27,12 +27,12 @@ app.use(methodOverride("_method"));
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, "public")));
 
-// GET '/'
+// GET '/' - Homepage 
 app.get('/', (req, res) => {
     res.render('index.ejs')
 });
 
-// GET '/fruits'
+// GET '/fruits' - displays all fruits
 app.get('/fruits', async (req, res) => {
     const allFruits = await Fruit.find()
     console.log(allFruits)
@@ -42,12 +42,21 @@ app.get('/fruits', async (req, res) => {
     });
 });
 
-// GET '/fruits/new'
+// GET '/fruits/new' - create new fruit
 app.get('/fruits/new', (req, res) => {
     res.render('fruits/new.ejs')
 });
 
-// POST '/fruits'
+// GET ''/fruits/:fruitId' - renders show page for fruit id
+app.get('/fruits/:fruitId', async (req, res) => {
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    res.render('fruits/show.ejs', {
+        fruit: foundFruit,
+    });
+});
+
+
+// POST '/fruits' - getting new fruit data
 app.post('/fruits', async (req, res) => {
     if (req.body.isReadyToEat === 'on') {
         req.body.isReadyToEat = true
@@ -56,9 +65,36 @@ app.post('/fruits', async (req, res) => {
     }
     res.redirect('/fruits')
 
-    await Fruit.create(req.body)
+    await Fruit.create(req.body) 
 });
 
+// DELETE '/fruits/:fruitId' - delete fruit
+app.delete('/fruits/:fruitId', async (req, res) => {
+    await Fruit.findByIdAndDelete(req.params.fruitId); 
+    res.redirect('/fruits')
+});
+
+// GET '/fruits/:fruitId/edit' - edit fruit properties
+app.get('/fruits/:fruitId/edit', async (req, res) => {
+    const foundFruit = await Fruit.findById(req.params.fruitId);
+    res.render('fruits/edit.ejs', {
+        fruit: foundFruit,
+    });
+
+});
+
+// PUT '/fruits/:fruitId' - for the edit
+app.put('/fruits/:fruitId', async (req, res) => {
+    if (req.body.isReadyToEat === 'on'){
+        req.body.isReadyToEat = true;
+    } else{
+        req.body.isReadyToEat = false;
+    }
+
+    
+    await Fruit.findByIdAndUpdate(req.params.fruitId, req.body)
+    res.redirect(`/fruits/${req.params.fruitId}`)
+});
 
 app.listen(3000, () => {
     console.log("Listening on port 3000")
