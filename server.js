@@ -35,54 +35,20 @@ app.get('/', (req, res) => {
     res.render('index.ejs')
 });
 
-// GET '/fruits' - displays all fruits
+
 app.get('/fruits', fruitsController.index);
 
-// GET '/fruits/new' - create new fruit
 app.get('/fruits/new', fruitsController.new);
 
-// GET ''/fruits/:fruitId' - renders show page for fruit id
 app.get('/fruits/:fruitId', fruitsController.show);
 
+app.post('/fruits', fruitsController.add);
 
-// POST '/fruits' - getting new fruit data
-app.post('/fruits', async (req, res) => {
-    if (req.body.isReadyToEat === 'on') {
-        req.body.isReadyToEat = true
-    } else {
-        req.body.isReadyToEat = false
-    }
-    res.redirect('/fruits')
+app.delete('/fruits/:fruitId', fruitsController.deleteFruit);
 
-    await Fruit.create(req.body) 
-});
+app.get('/fruits/:fruitId/edit', fruitsController.editFruit);
 
-// DELETE '/fruits/:fruitId' - delete fruit
-app.delete('/fruits/:fruitId', async (req, res) => {
-    await Fruit.findByIdAndDelete(req.params.fruitId); 
-    res.redirect('/fruits')
-});
-
-// GET '/fruits/:fruitId/edit' - edit fruit properties
-app.get('/fruits/:fruitId/edit', async (req, res) => {
-    const foundFruit = await Fruit.findById(req.params.fruitId);
-    res.render('fruits/edit.ejs', {
-        fruit: foundFruit,
-    });
-
-});
-
-// PUT '/fruits/:fruitId' - update route
-app.put('/fruits/:fruitId', async (req, res) => {
-    if (req.body.isReadyToEat === 'on'){
-        req.body.isReadyToEat = true;
-    } else{
-        req.body.isReadyToEat = false;
-    }
-    
-    await Fruit.findByIdAndUpdate(req.params.fruitId, req.body)
-    res.redirect(`/fruits/${req.params.fruitId}`)
-});
+app.put('/fruits/:fruitId', fruitsController.updateFruit);
 
 app.listen(3000, () => {
     console.log("Listening on port 3000")
